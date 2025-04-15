@@ -206,7 +206,7 @@ export default function TodoList() {
           <div className="flex justify-center mb-4">
             <button
               onClick={addTask}
-              className="bg-indigo-400 hover:bg-indigo-500 text-black px-6 py-2 rounded-xl font-semibold"
+              className="bg-indigo-400 hover:bg-indigo-500 text-white px-6 py-2 rounded-xl font-semibold text-black"
             >
               TAMBAH KEGIATAN
             </button>
@@ -228,22 +228,21 @@ export default function TodoList() {
                 ⬍
               </button>
               {showSortOptions && (
-                <div className="absolute top-10 right-0 bg-white text-black rounded-xl shadow-lg p-3 z-10 w-40">
+                <div className="absolute top-8 right-0 bg-white text-black rounded shadow p-2 z-10">
                   <div
-                    className="cursor-pointer hover:bg-gray-100 px-4 py-2 rounded-md transition"
+                    className="cursor-pointer hover:bg-gray-200 p-1"
                     onClick={() => handleSortOption("text")}
                   >
-                    🔤 Sort by Nama
+                    Sort by Nama
                   </div>
                   <div
-                    className="cursor-pointer hover:bg-gray-100 px-4 py-2 rounded-md transition"
+                    className="cursor-pointer hover:bg-gray-200 p-1"
                     onClick={() => handleSortOption("deadline")}
                   >
-                    📅 Sort by Tanggal
+                    Sort by Tanggal
                   </div>
                 </div>
               )}
-
             </div>
           </div>
 
@@ -291,7 +290,7 @@ export default function TodoList() {
                     <div className="text-right">
                       <button
                         onClick={() => editTask(task)}
-                        className="text-blue-800 bg-blue-100 px-2 py-1 rounded hover:bg-blue-200 mr-2"
+                        className="text-blue-800 bg-blue-100 border border-blue-500 px-2 py-1 rounded hover:bg-blue-200 mr-2"
                       >
                         📝edit
                       </button>
@@ -299,7 +298,7 @@ export default function TodoList() {
                     <div className="text-left">
                       <button
                         onClick={() => deleteTask(task.id)}
-                        className="text-red-800 bg-red-100 px-2 py-1 rounded hover:bg-red-200"
+                        className="text-red-800 bg-red-100 border border-red-500 px-2 py-1 rounded hover:bg-red-200"
                       >
                         🗑️hapus
                       </button>
