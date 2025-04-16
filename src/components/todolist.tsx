@@ -259,10 +259,10 @@ export default function TodoList() {
                 const isExpired = timeLeft <= 0;
 
                 const rowColor = task.completed
-                  ? "bg-orange-300"
+                  ? "bg-green-100"
                   : isExpired
-                    ? "bg-orange-200"
-                    : "bg-orange-100";
+                    ? "bg-red-100"
+                    : "bg-orange-200";
 
                 return (
                   <motion.li
@@ -291,12 +291,18 @@ export default function TodoList() {
                     <div>{new Date(task.deadline).toLocaleDateString()}</div>
                     <div className="flex items-center justify-center gap-2">
                       <span className="text-sm">⏰</span>
-                      <span>{formatTimeRemaining(timeLeft)}</span>
+                      <span>
+                        {task.completed
+                          ? "Diselesaikan"
+                          : formatTimeRemaining(timeLeft)}
+                      </span>
                     </div>
+
                     <div className="text-right">
                       <button
                         onClick={() => editTask(task)}
-                        className="text-orange-800 bg-orange-200 border border-orange-400 px-2 py-1 rounded hover:bg-orange-300 mr-2"
+                        className={`truncate max-w-[180px] text-left ${task.completed ? " text-orange-700" : ""
+                          }`}
                       >
                         📝edit
                       </button>
@@ -304,7 +310,8 @@ export default function TodoList() {
                     <div className="text-left">
                       <button
                         onClick={() => deleteTask(task.id)}
-                        className="text-orange-800 bg-orange-200 border border-orange-400 px-2 py-1 rounded hover:bg-orange-300"
+                        className={`truncate max-w-[180px] text-left ${task.completed ? " text-orange-700" : ""
+                          }`}
                       >
                         🗑️hapus
                       </button>
