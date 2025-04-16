@@ -19,16 +19,13 @@ type Task = {
   deadline: string;
 };
 
-type SortKey = "text" | "deadline" | "remaining";
-type SortOrder = "asc" | "desc";
+type SortOption = "abjad-asc" | "time-asc";
 
 export default function TodoList() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [sortKey, setSortKey] = useState<SortKey>("text");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
-  const [showSortOptions, setShowSortOptions] = useState(false);
-
+  const [sortOption, setSortOption] = useState<SortOption>("time-asc");
   const [, setTime] = useState(Date.now());
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTime(Date.now());
@@ -52,45 +49,33 @@ export default function TodoList() {
     fetchTasks();
   }, []);
 
-  const calculateTimeRemaining = useCallback((deadline: string): string => {
+  const calculateTimeRemaining = useCallback((deadline: string): number => {
     const deadlineTime = new Date(deadline).getTime();
     const now = Date.now();
-    const difference = deadlineTime - now;
-
-    if (difference <= 0) return "Waktu habis!";
-
-    const hours = Math.floor(difference / (1000 * 60 * 60));
-    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-    return `${hours}h ${minutes}m ${seconds}s`;
+    return deadlineTime - now;
   }, []);
 
+  const formatTimeRemaining = (remaining: number): string => {
+    if (remaining <= 0) return "Waktu habis!";
+    const hours = Math.floor(remaining / (1000 * 60 * 60));
+    const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+    return `${hours}h ${minutes}m ${seconds}s`;
+  };
+
   const sortedTasks = useMemo(() => {
-    return [...tasks].sort((a, b) => {
-      let compareVal = 0;
-      if (sortKey === "text") {
-        compareVal = a.text.localeCompare(b.text);
-      } else if (sortKey === "deadline") {
-        compareVal = new Date(a.deadline).getTime() - new Date(b.deadline).getTime();
-      } else if (sortKey === "remaining") {
-        compareVal =
-          new Date(a.deadline).getTime() - Date.now() -
-          (new Date(b.deadline).getTime() - Date.now());
-      }
-      return sortOrder === "asc" ? compareVal : -compareVal;
-    });
-  }, [tasks, sortKey, sortOrder]);
-
-  const toggleSort = (key: SortKey) => {
-    setSortKey(key);
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
-  };
-
-  const handleSortOption = (key: SortKey) => {
-    setSortKey(key);
-    setShowSortOptions(false);
-  };
+    const sorted = [...tasks];
+    if (sortOption === "abjad-asc") {
+      sorted.sort((a, b) => a.text.localeCompare(b.text));
+    } else if (sortOption === "time-asc") {
+      sorted.sort(
+        (a, b) =>
+          calculateTimeRemaining(a.deadline) -
+          calculateTimeRemaining(b.deadline)
+      );
+    }
+    return sorted;
+  }, [tasks, sortOption, calculateTimeRemaining]);
 
   const addTask = async (): Promise<void> => {
     const { value: formValues } = await Swal.fire({
@@ -236,46 +221,34 @@ export default function TodoList() {
         <div className="bg-orange-50 p-6 rounded-2xl border border-orange-300 shadow-xl text-orange-900">
           <h1 className="text-2xl font-bold text-center mb-6">TO DO LIST</h1>
 
-          <div className="flex justify-center mb-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
             <button
               onClick={addTask}
               className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-semibold"
             >
               TAMBAH KEGIATAN
             </button>
+
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value as SortOption)}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg"
+            >
+              <option value="abjad-asc">Sort by name</option>
+              <option value="time-asc">Sort by time</option>
+            </select>
           </div>
 
+
           <div className="grid grid-cols-5 gap-4 font-semibold text-center text-orange-900 mb-2 px-6">
-            <div className="cursor-pointer" onClick={() => toggleSort("text")}>
+            <div className="">
               Kegiatan
             </div>
-            <div className="cursor-pointer" onClick={() => toggleSort("deadline")}>
+            <div className="">
               Deadline
             </div>
             <div className="relative flex items-center justify-center">
               <span>Sisa Waktu</span>
-              <button
-                className="ml-2"
-                onClick={() => setShowSortOptions(!showSortOptions)}
-              >
-                ⬍
-              </button>
-              {showSortOptions && (
-                <div className="absolute top-8 right-0 bg-orange-50 text-orange-900 rounded shadow p-2 z-10">
-                  <div
-                    className="cursor-pointer hover:bg-orange-100 p-1"
-                    onClick={() => handleSortOption("text")}
-                  >
-                    Sort by Nama
-                  </div>
-                  <div
-                    className="cursor-pointer hover:bg-orange-100 p-1"
-                    onClick={() => handleSortOption("deadline")}
-                  >
-                    Sort by Tanggal
-                  </div>
-                </div>
-              )}
             </div>
           </div>
 
@@ -283,7 +256,7 @@ export default function TodoList() {
             <AnimatePresence>
               {sortedTasks.map((task) => {
                 const timeLeft = calculateTimeRemaining(task.deadline);
-                const isExpired = timeLeft === "Waktu habis!";
+                const isExpired = timeLeft <= 0;
 
                 const rowColor = task.completed
                   ? "bg-orange-300"
@@ -318,7 +291,7 @@ export default function TodoList() {
                     <div>{new Date(task.deadline).toLocaleDateString()}</div>
                     <div className="flex items-center justify-center gap-2">
                       <span className="text-sm">⏰</span>
-                      <span>{timeLeft}</span>
+                      <span>{formatTimeRemaining(timeLeft)}</span>
                     </div>
                     <div className="text-right">
                       <button
