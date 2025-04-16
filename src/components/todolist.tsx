@@ -195,48 +195,45 @@ export default function TodoList() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-orange-100">
       <div className="max-w-3xl mx-auto mt-10 p-4">
-        <div
-          className="bg-cover bg-center bg-no-repeat p-6 rounded-2xl border border-gray-400 shadow-xl text-white"
-          style={{ backgroundImage: 'url("/bg.jpg")' }}
-        >
-          <h1 className="text-2xl font-bold text-center mb-6 text-black">TO DO LIST</h1>
+        <div className="bg-orange-50 p-6 rounded-2xl border border-orange-300 shadow-xl text-orange-900">
+          <h1 className="text-2xl font-bold text-center mb-6">TO DO LIST</h1>
 
           <div className="flex justify-center mb-4">
             <button
               onClick={addTask}
-              className="bg-indigo-400 hover:bg-indigo-500 text-white px-6 py-2 rounded-xl font-semibold text-black"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-semibold"
             >
               TAMBAH KEGIATAN
             </button>
           </div>
 
-          <div className="grid grid-cols-5 gap-4 font-semibold text-center text-white mb-2 px-6">
-            <div className="cursor-pointer text-black" onClick={() => toggleSort("text")}>
+          <div className="grid grid-cols-5 gap-4 font-semibold text-center text-orange-900 mb-2 px-6">
+            <div className="cursor-pointer" onClick={() => toggleSort("text")}>
               Kegiatan
             </div>
-            <div className="cursor-pointer text-black" onClick={() => toggleSort("deadline")}>
+            <div className="cursor-pointer" onClick={() => toggleSort("deadline")}>
               Deadline
             </div>
-            <div className="relative flex items-center justify-center text-black">
+            <div className="relative flex items-center justify-center">
               <span>Sisa Waktu</span>
               <button
-                className="ml-5"
+                className="ml-2"
                 onClick={() => setShowSortOptions(!showSortOptions)}
               >
                 ⬍
               </button>
               {showSortOptions && (
-                <div className="absolute top-8 right-0 bg-white text-black rounded shadow p-2 z-10">
+                <div className="absolute top-8 right-0 bg-orange-50 text-orange-900 rounded shadow p-2 z-10">
                   <div
-                    className="cursor-pointer hover:bg-gray-200 p-1"
+                    className="cursor-pointer hover:bg-orange-100 p-1"
                     onClick={() => handleSortOption("text")}
                   >
                     Sort by Nama
                   </div>
                   <div
-                    className="cursor-pointer hover:bg-gray-200 p-1"
+                    className="cursor-pointer hover:bg-orange-100 p-1"
                     onClick={() => handleSortOption("deadline")}
                   >
                     Sort by Tanggal
@@ -246,17 +243,17 @@ export default function TodoList() {
             </div>
           </div>
 
-          <ul className="space-y-2 text-black">
+          <ul className="space-y-2 text-orange-900">
             <AnimatePresence>
               {sortedTasks.map((task) => {
                 const timeLeft = calculateTimeRemaining(task.deadline);
                 const isExpired = timeLeft === "Waktu habis!";
 
                 const rowColor = task.completed
-                  ? "bg-green-300"
+                  ? "bg-orange-300"
                   : isExpired
-                    ? "bg-red-300"
-                    : "bg-yellow-200";
+                    ? "bg-orange-200"
+                    : "bg-orange-100";
 
                 return (
                   <motion.li
@@ -272,10 +269,10 @@ export default function TodoList() {
                         type="checkbox"
                         checked={task.completed}
                         onChange={() => toggleComplete(task.id)}
-                        className="form-checkbox h-4 w-4 text-green-600"
+                        className="form-checkbox h-4 w-4 text-orange-600"
                       />
                       <span
-                        className={`truncate max-w-[180px] text-left ${task.completed ? "line-through text-gray-700" : ""
+                        className={`truncate max-w-[180px] text-left ${task.completed ? "line-through text-orange-700" : ""
                           }`}
                         title={task.text}
                       >
@@ -290,7 +287,7 @@ export default function TodoList() {
                     <div className="text-right">
                       <button
                         onClick={() => editTask(task)}
-                        className="text-blue-800 bg-blue-100 border border-blue-500 px-2 py-1 rounded hover:bg-blue-200 mr-2"
+                        className="text-orange-800 bg-orange-200 border border-orange-400 px-2 py-1 rounded hover:bg-orange-300 mr-2"
                       >
                         📝edit
                       </button>
@@ -298,7 +295,7 @@ export default function TodoList() {
                     <div className="text-left">
                       <button
                         onClick={() => deleteTask(task.id)}
-                        className="text-red-800 bg-red-100 border border-red-500 px-2 py-1 rounded hover:bg-red-200"
+                        className="text-orange-800 bg-orange-200 border border-orange-400 px-2 py-1 rounded hover:bg-orange-300"
                       >
                         🗑️hapus
                       </button>
