@@ -234,8 +234,8 @@ export default function TodoList() {
               onChange={(e) => setSortOption(e.target.value as SortOption)}
               className="bg-gray-700 text-white px-4 py-2 rounded-lg"
             >
-              <option value="abjad-asc">Sort by name</option>
-              <option value="time-asc">Sort by time</option>
+              <option value="abjad-asc">A-Z</option>
+              <option value="time-asc">time</option>
             </select>
           </div>
 
